@@ -3,22 +3,48 @@
 #include <string.h>
 #include <sys/stat.h>
 #include "../include/installer.h"
+#include "../include/check_ncurses.h"
+#include "../include/install.h"
 
-int check_ncurses_header();
 
 int main() {
-    printf("Rozpoczynam instalację edytora nano\n");
-    
-    if(check_ncurses_header()==1){
+State state=INIT;
+
+
+while(state!=EXIT){
+switch(state){
+case INIT:
+
+    printf("v.3 Rozpoczynam instalację edytora nano\n");
+    state=DEPCHECK;
+    break;
+
+case DEPCHECK:
+       
+    if(check_ncurses_header()){
       printf("mamy ncurses\n");
+      state=ARCHCHECK;       
     }
     else {
       printf("brak ncurses\n");
+      state=EXIT;
     }
-    return 0;
+    break;
+
+case ARCHCHECK:
+
+     if(check_if_exists()){ 
+      printf("mamy plik\n");
+      state=EXIT;
+     } 
+     else state=EXIT;
+     break;
+
+case EXIT:      
+     break;
+}
 }
 
-int check_ncurses_header() {
-    struct stat buffer;
-    return stat("/usr/include/ncurses.h", &buffer) == 0;
+return 0;
 }
+
