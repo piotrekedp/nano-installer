@@ -33,11 +33,37 @@ case DEPCHECK:
 
 case ARCHCHECK:
 
-     if(check_if_exists()){ 
+     if(!check_if_exists()){ 
       printf("mamy plik\n");
-      state=EXIT;
+      state=DOWNLOAD;
      } 
      else state=EXIT;
+     break;
+
+case DOWNLOAD:
+     if(download()) state=CONFIGURE;
+     else state=EXIT;
+     break;
+
+//zamienic na sprawdzanie czy archiwum zostało utworzone
+case EXTRACT:
+     if(extract()) state=CONFIGURE;
+     else state=EXIT;
+     break;
+
+case CONFIGURE:
+     if(configure()) state=MAKE;
+     else state=EXIT;
+     break;
+
+case MAKE:
+    if(make()) state=MAKEINSTALL;
+    else state=EXIT;
+    break;
+
+case MAKEINSTALL:
+     make_install();
+     state=EXIT;
      break;
 
 case EXIT:      
